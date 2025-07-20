@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>El Viajero del Tiempo y los Taínos</title>
+    <style>
+        /* --- Importación de Fuentes --- */
+        @import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Roboto:wght@300;400&display=swap');
+
+        /* --- Definición de Temas con Variables CSS --- */
+        :root {
+            /* Tema Oscuro (Por defecto) */
+            --bg-image: url('https://images.unsplash.com/photo-1507525428034-b723a9ce6890?q=80&w=2070&auto=format&fit=crop');
+            --text-color: #fff;
+            --game-bg-color: rgba(0, 0, 0, 0.8);
+            --game-border-color: rgba(255, 215, 0, 0.5);
+            --title-color: #FFD700; /* Dorado */
+            --button-bg-color: rgba(30, 130, 76, 0.6);
+            --button-hover-bg-color: rgba(46, 204, 113, 0.8);
+            --button-border-color: rgba(255, 255, 255, 0.7);
+            --button-text-color: #fff;
+        }
+
+        body.light-mode {
+            /* Tema Claro */
+            --text-color: #2c3e50;
+            --game-bg-color: rgba(255, 250, 240, 0.9);
+            --game-border-color: rgba(0, 100, 0, 0.7);
+            --title-color: #005A9C;
+            --button-bg-color: rgba(46, 139, 87, 0.8);
+            --button-hover-bg-color: rgba(60, 179, 113, 1);
+            --button-border-color: rgba(0, 100, 0, 0.9);
+            --button-text-color: #fff;
+        }
+
+        /* --- Estilos Generales --- */
+        body {
+            margin: 0;
+            font-family: 'Roboto', sans-serif;
+            background-image: var(--bg-image);
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            color: var(--text-color);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+            box-sizing: border-box;
+            transition: color 0.4s, background-color 0.4s;
+            overflow: hidden; /* Evita barras de scroll por las palmeras */
+        }
+
+        /* ===== NUEVO: PALMERAS DECORATIVAS ===== */
+        body::before, body::after {
+            content: '';
+            position: fixed;
+            bottom: 0;
+            width: 350px; /* Tamaño de las palmeras */
+            height: 500px;
+            background-size: contain;
+            background-repeat: no-repeat;
+            z-index: 1; /* Detrás del juego, delante del fondo */
+            pointer-events: none; /* Para que no se puedan clickear */
+            opacity: 0.9;
+        }
+
+        body::before {
+            background-image: url('https://png.pngtree.com/png-clipart/20230821/original/pngtree-tropical-coconut-palm-tree-with-coconut-on-white-background-picture-image_8126939.png');
+            left: -50px; /* Posicionamiento de la palmera izquierda */
+            background-position: left bottom;
+        }
+
+        body::after {
+            background-image: url('https://png.pngtree.com/png-clipart/20240212/original/pngtree-tropical-coconut-palm-tree-illustration-png-image_14297739.png');
+            right: -50px; /* Posicionamiento de la palmera derecha */
+            background-position: right bottom;
+            transform: scaleX(-1); /* Voltea la imagen para que no sean idénticas */
+        }
+
+        /* ===== FIN DE LA SECCIÓN DE PALMERAS ===== */
+
+
+        /* --- Contenedor Principal del Juego --- */
+        #game-container {
+            position: relative; /* Necesario para que z-index funcione correctamente */
+            z-index: 10; /* Asegura que el juego esté por encima de las palmeras */
+            width: 100%;
+            max-width: 800px;
+            background-color: var(--game-bg-color);
+            border: 2px solid var(--game-border-color);
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 0 25px rgba(0, 0, 0, 0.7);
+            text-align: center;
+            backdrop-filter: blur(5px);
+            -webkit-backdrop-filter: blur(5px);
+            transition: background-color 0.4s, border-color 0.4s;
+        }
+
+        /* --- Botón de Tema --- */
+        #theme-toggle {
+            position: absolute;
+            top: 15px;
+            right: 20px;
+            font-size: 1.8em;
+            cursor: pointer;
+            user-select: none;
+            transition: transform 0.3s;
+        }
+        #theme-toggle:hover {
+            transform: scale(1.1) rotate(15deg);
+        }
+
+        h1 {
+            font-family: 'Cinzel', serif;
+            font-size: 2.5em;
+            color: var(--title-color);
+            margin-bottom: 20px;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
+            transition: color 0.4s;
+        }
+
+        #story-text {
+            font-size: 1.2em;
+            line-height: 1.6;
+            margin-bottom: 30px;
+            min-height: 100px;
+            text-align: left;
+            padding: 0 15px;
+            font-weight: 300;
+        }
+
+        #options-container {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .option-button {
+            padding: 15px 20px;
+            font-family: 'Roboto', sans-serif;
+            font-size: 1em;
+            font-weight: 400;
+            background-color: var(--button-bg-color);
+            color: var(--button-text-color);
+            border: 2px solid var(--button-border-color);
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background-color 0.3s, transform 0.2s, border-color 0.3s;
+            text-align: left;
+        }
+
+        .option-button:hover {
+            background-color: var(--button-hover-bg-color);
+            transform: scale(1.02);
+        }
+        
+        /* ===== NUEVO: MEDIA QUERY PARA MÓVILES ===== */
+        @media (max-width: 900px) {
+            body::before, body::after {
+                display: none; /* Oculta las palmeras en pantallas estrechas */
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div id="game-container">
+        <div id="theme-toggle" title="Cambiar tema"></div>
+        <h1>Crónicas de Quisqueya</h1>
+        <div id="story-text">Cargando historia...</div>
+        <div id="options-container"></div>
+    </div>
+
+    <script>
+        // --- El código JavaScript no necesita cambios ---
+        // (El resto del script es idéntico al anterior)
+        
+        let puntosVictoria = 0, puntosTraicion = 0, puntosConfusion = 0;
+        const historia = [ { id: 1, texto: "Un destello cegador y caes sobre arena cálida. El aire huele a sal y flores exóticas. Estás en 1490. A lo lejos, ves a un grupo de nativos taínos acercándose con curiosidad. ¿Qué haces?", opciones: [ { texto: "Levantar las manos en señal de paz y sonreír.", siguienteId: 2, puntos: { vp: 1 } }, { texto: "Esconderte entre las palmeras para observar primero.", siguienteId: 3, puntos: { cp: 1 } }, { texto: "Gritar que vienes del futuro para advertirles de un gran peligro.", siguienteId: 4, puntos: { cp: 2, bp: 1 } } ] }, { id: 2, texto: "Te aceptan con cautela y te llevan a su aldea. El cacique, líder de la tribu, te ofrece comida. Te pregunta quién eres. ¿Cómo respondes?", opciones: [{ texto: "Con honestidad, explicando de forma simple que vienes de 'otro tiempo' para ayudar.", siguienteId: 5, puntos: { vp: 1, cp: 1 } }, { texto: "Inventas que eres un enviado de sus dioses, para ganar su favor rápidamente.", siguienteId: 6, puntos: { bp: 2 } }, { texto: "Dices que eres un explorador de una tierra lejana y buscas conocimiento.", siguienteId: 7, puntos: { vp: 1 } }] }, { id: 3, texto: "Desde tu escondite, ves que son un pueblo pacífico. Un niño pequeño se acerca a tu posición y te descubre. Llama a los demás. Estás rodeado.", opciones: [{ texto: "Mostrarles un objeto metálico brillante (un mechero) para distraerlos y parecer poderoso.", siguienteId: 5, puntos: { cp: 2 } }, { texto: "Salir lentamente, arrodillarte y ofrecerles una barra de proteína que llevas.", siguienteId: 7, puntos: { vp: 1, cp: 1 } }, { texto: "Intentar huir hacia la selva.", siguienteId: 6, puntos: { bp: 1, cp: 1 } }] }, { id: 4, texto: "Tus gritos los alarman. Te ven como un loco o un demonio. Te atan y te llevan ante el chamán de la tribu para que decida tu destino.", opciones: [{ texto: "Intentar calmarte y explicarles con gestos sobre barcos grandes en el horizonte.", siguienteId: 5, puntos: { vp: 1 } }, { texto: "Insistir en tu divinidad y poder, exigiendo que te liberen.", siguienteId: 6, puntos: { bp: 2, cp: 1 } }, { texto: "Permanecer en silencio, esperando una oportunidad.", siguienteId: 7, puntos: { cp: 1 } }] }, { id: 5, texto: "Logras establecer una comunicación básica. Confían un poco en ti. ¿En qué te enfocas para prepararlos para la llegada de los españoles?", opciones: [{ texto: "Enseñarles tácticas de guerrilla y a construir fortificaciones simples.", siguienteId: 8, puntos: { vp: 2 } }, { texto: "Introducir conceptos de agricultura avanzada para crear excedentes y poder comerciar.", siguienteId: 9, puntos: { vp: 1 } }, { texto: "Explicarles el concepto de las enfermedades que traerán y la importancia de la cuarentena.", siguienteId: 10, puntos: { vp: 2, cp: 1 } }] }, { id: 6, texto: "Tu actitud arrogante o extraña te ha ganado su desconfianza. Te vigilan constantemente. Un día, te piden que demuestres tus 'poderes'.", opciones: [{ texto: "Intentar un truco de ciencia simple, como encender fuego con una lupa.", siguienteId: 10, puntos: { vp: 1, cp: 1 } }, { texto: "Negarte, diciendo que tus dones no son para el entretenimiento. Esto los ofende.", siguienteId: 11, puntos: { bp: 2 } }, { texto: "Crear una profecía sobre la llegada de los 'hombres pálidos' para asustarlos y que te obedezcan.", siguienteId: 9, puntos: { bp: 1, vp: 1 } }] }, { id: 7, texto: "Te has integrado como un miembro curioso de la tribu. Tu perspectiva es única. ¿Qué consejo les das como prioridad?", opciones: [{ texto: "Aconsejarles unificar las diferentes tribus de la isla bajo un solo mando.", siguienteId: 8, puntos: { vp: 2 } }, { texto: "Sugerir que escondan todo el oro y objetos de valor lejos de la costa.", siguienteId: 9, puntos: { vp: 1 } }, { texto: "Advertirles que no confíen en nadie que llegue del mar, sin importar sus promesas.", siguienteId: 10, puntos: { vp: 1, bp: 1 } }] }, { id: 8, texto: "Tus ideas sobre defensa son revolucionarias. Algunos te ven como un líder, otros temen que traigas la guerra a sus vidas pacíficas.", opciones: [{ texto: "Insistir en que la única opción es la fuerza y la preparación para el conflicto.", siguienteId: 12, puntos: { vp: 1, bp: 1 } }, { texto: "Moderar tu postura: la defensa es solo el último recurso, la diplomacia debe ser lo primero.", siguienteId: 13, puntos: { vp: 2 } }, { texto: "Usar tu conocimiento para crear armas más letales, asustando a algunos taínos.", siguienteId: 11, puntos: { bp: 2 } }] }, { id: 9, texto: "Tus consejos económicos están dando frutos, pero también crean nuevas tensiones. Algunas familias acumulan más que otras.", opciones: [{ texto: "Proponer un sistema de reparto equitativo gestionado por los caciques.", siguienteId: 13, puntos: { vp: 2 } }, { texto: "Dejar que la 'mano invisible' actúe, generando una clase de 'ricos' que podría liderar.", siguienteId: 11, puntos: { bp: 2 } }, { texto: "Sugerir que el oro no tiene valor real, y que deberían intercambiarlo todo.", siguienteId: 12, puntos: { cp: 2 } }] }, { id: 10, texto: "La idea de enfermedades invisibles es difícil de asimilar. El chamán te acusa de brujería.", opciones: [{ texto: "Hacer una demostración con plantas y agua para explicar la contaminación.", siguienteId: 13, puntos: { vp: 2, cp: 1 } }, { texto: "Desafiar la autoridad del chamán, creando una división en la tribu.", siguienteId: 11, puntos: { bp: 2 } }, { texto: "Retractarte de tus palabras para mantener la paz, perdiendo credibilidad.", siguienteId: 12, puntos: { bp: 1 } }] }, { id: 11, texto: "Tus acciones han fracturado a la tribu. Te confrontan guerreros que antes eran tus amigos.", opciones: [{ texto: "Admitir tus errores y pedir una última oportunidad para unirlos contra el verdadero enemigo.", siguienteId: 14, puntos: { vp: 1, bp: -2 } }, { texto: "Acusarlos de ceguera y estupidez, afirmando que solo tú puedes salvarlos.", siguienteId: 15, puntos: { bp: 3 } }, { texto: "Intentar un 'truco' del futuro para intimidarlos, pero sale mal.", siguienteId: 15, puntos: { cp: 3 } }] }, { id: 12, texto: "Se acerca el año 1492. La gente está inquieta, pero no del todo convencida. Ves tres grandes barcos en el horizonte. ¡Han llegado!", opciones: [{ texto: "Instar a una defensa inmediata y total. Atacar primero.", siguienteId: 15, puntos: { vp: 1, bp: 1 } }, { texto: "Aconsejar un primer contacto cauteloso pero armado, listos para cualquier cosa.", siguienteId: 14, puntos: { vp: 2 } }, { texto: "Recomendar que se escondan y dejen que los recién llegados no encuentren a nadie.", siguienteId: 15, puntos: { cp: 1 } }] }, { id: 13, texto: "Has unido a las tribus y preparado sus mentes. Tres carabelas anclan en la bahía. El momento de la verdad ha llegado.", opciones: [{ texto: "Organizar una recepción masiva y pacífica, pero desde una posición de fuerza innegable.", siguienteId: 14, puntos: { vp: 2 } }, { texto: "Enviar una canoa con un mensaje claro: bienvenidos a comerciar, no a asentarse.", siguienteId: 14, puntos: { vp: 1, cp: 1 } }, { texto: "Usar tu conocimiento para tender una trampa elaborada en la bahía.", siguienteId: 15, puntos: { vp: 2, bp: 1 } }] }, { id: 14, texto: "El primer encuentro con los hombres de Colón es tenso. Su líder parece impresionado por vuestra organización, pero codicioso al ver el oro.", opciones: [{ texto: "Ofrecer un comercio justo: comida y agua a cambio de herramientas de metal.", siguienteId: 15, puntos: { vp: 2 } }, { texto: "Declarar la isla un territorio soberano y prohibirles desembarcar.", siguienteId: 15, puntos: { vp: 1, bp: 1 } }, { texto: "Sugerirles buscar riquezas en otras islas, desviando su atención de forma astuta.", siguienteId: 15, puntos: { vp: 1, cp: 1 } }] }, { id: 15, texto: "Los eventos se precipitan. Tus decisiones han moldeado el alma de los taínos. La historia pende de un hilo...", opciones: [{ texto: "Ver mi destino", siguienteId: "calcularFinal" }] }, { id: "end1", texto: "FINAL 1: VICTORIA TAÍNA. Tu estrategia fue brillante. Los taínos, unificados y preparados, mostraron una resistencia tan organizada y una diplomacia tan firme que Colón, incapaz de subyugarlos fácilmente, se retiró. Informó a los Reyes de una isla 'demasiado hostil y sin provecho'. La Hispaniola, por ahora, se ha salvado. Tu legado es el de un héroe anónimo." }, { id: "end2", texto: "FINAL 2: EL CURSO INALTERADO. Tus acciones fueron demasiado pasivas o contradictorias. La historia demostró ser una fuerza implacable y el destino de los taínos no cambió. Las enfermedades, la tecnología y la codicia lo conquistaron todo. Te convertiste en una nota a pie de página en una historia trágica que no pudiste cambiar." }, { id: "end3", texto: "FINAL 3: LA TRAICIÓN. Tus ideas egoístas y manipuladoras sembraron la discordia. Viendo que solo buscabas poder, los taínos te dieron la espalda y te entregaron a los españoles como una 'ofrenda de paz'. Tu último recuerdo es la mirada de decepción del cacique que una vez te acogió." }, { id: "end4", texto: "FINAL 4: EL SACRIFICIO DEL EXTRAÑO. Tus acciones fueron tan bizarras que el pueblo taíno nunca confió en ti. Te consideraron un espíritu maligno. Antes de que las naves llegaran, en un ritual para purificar la isla, el chamán te sacrificó a sus dioses para restaurar el equilibrio que habías roto." }, { id: "end5", texto: "FINAL 5: UN FUTURO INCIERTO. No lograste una victoria total, pero tu influencia fue innegable. Los taínos están más unificados y cautelosos. Colón se va, pero la amenaza no ha desaparecido. Has ganado tiempo. Te quedas en la isla, un guardián de un mañana incierto que ahora tiene una chispa de esperanza." }];
+        const body = document.body, themeToggleButton = document.getElementById('theme-toggle');
+        function applyTheme(theme) { body.classList.toggle('light-mode', theme === 'light'); themeToggleButton.innerHTML = theme === 'light' ? '🌙' : '☀️'; }
+        themeToggleButton.addEventListener('click', () => { const newTheme = body.classList.contains('light-mode') ? 'dark' : 'light'; localStorage.setItem('theme', newTheme); applyTheme(newTheme); });
+        const storyTextElement = document.getElementById('story-text'), optionsContainer = document.getElementById('options-container');
+        function mostrarEscena(id) {
+            if (id === "calcularFinal") return determinarFinal();
+            const escena = historia.find(s => s.id === id);
+            if (!escena) { console.error(`No se encontró la escena con id: ${id}`); storyTextElement.textContent = "Error en la historia. Fin del juego."; optionsContainer.innerHTML = ''; return; }
+            storyTextElement.innerHTML = escena.texto;
+            optionsContainer.innerHTML = '';
+            if (escena.opciones) {
+                escena.opciones.forEach(opcion => {
+                    const button = document.createElement('button');
+                    button.classList.add('option-button');
+                    button.textContent = opcion.texto;
+                    button.addEventListener('click', () => {
+                        if (opcion.puntos) { puntosVictoria += opcion.puntos.vp || 0; puntosTraicion += opcion.puntos.bp || 0; puntosConfusion += opcion.puntos.cp || 0; }
+                        mostrarEscena(opcion.siguienteId);
+                    });
+                    optionsContainer.appendChild(button);
+                });
+            } else { const button = document.createElement('button'); button.classList.add('option-button'); button.textContent = "Jugar de nuevo"; button.onclick = () => location.reload(); optionsContainer.appendChild(button); }
+        }
+        function determinarFinal() {
+            console.log(`Puntuaciones finales: Victoria=${puntosVictoria}, Traición=${puntosTraicion}, Confusión=${puntosConfusion}`);
+            let finalId;
+            const UMBRAL_TRAICION = 6, UMBRAL_CONFUSION = 6, UMBRAL_VICTORIA_TOTAL = 9, UMBRAL_VICTORIA_PARCIAL = 5;
+            if (puntosTraicion >= UMBRAL_TRAICION) finalId = "end3";
+            else if (puntosConfusion >= UMBRAL_CONFUSION) finalId = "end4";
+            else if (puntosVictoria >= UMBRAL_VICTORIA_TOTAL) finalId = "end1";
+            else if (puntosVictoria >= UMBRAL_VICTORIA_PARCIAL) finalId = "end5";
+            else finalId = "end2";
+            mostrarEscena(finalId);
+        }
+        document.addEventListener('DOMContentLoaded', () => {
+            const savedTheme = localStorage.getItem('theme') || 'dark';
+            applyTheme(savedTheme);
+            mostrarEscena(1);
+        });
+    </script>
+</body>
+</html>
